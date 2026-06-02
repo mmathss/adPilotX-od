@@ -20,6 +20,8 @@ const { cards = SITE_DATA.examples_carousel.cards } = Astro.props;
         else if (idx === 4) colorStyle = 'color: #34d399;';
         else if (idx === 5) colorStyle = 'color: #f87171;';
         
+        const hasImage = !!card.image;
+
         return (
           <div class="mock-card glass" style="position: relative;">
             <div class="mock-header">
@@ -29,16 +31,31 @@ const { cards = SITE_DATA.examples_carousel.cards } = Astro.props;
                 <p>Publicidad</p>
               </div>
             </div>
-            <div class="mock-content" style="position: relative; overflow: hidden; display: flex; align-items: flex-end;">
-              <div class="mock-inner-card">
-                <div class="mock-inner-title">{card.title}</div>
-                <div class="mock-inner-subtitle" style={colorStyle}>{card.subtitle}</div>
-                <div class="mock-inner-meta">{card.meta}</div>
-              </div>
-              <div class="mock-overlay">
-                <div class="mock-tag">{card.tag}</div>
-                <div class="mock-text">{card.text}</div>
-              </div>
+            <div
+              class="mock-content"
+              style={`position: relative; overflow: hidden; display: flex; align-items: flex-end;${hasImage ? ` background-image: url('${card.image}'); background-size: cover; background-position: center;` : ''}`}
+            >
+              {hasImage ? (
+                <>
+                  <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(10,10,12,0.1) 0%, rgba(10,10,12,0.72) 100%); z-index: 1;"></div>
+                  <div class="mock-overlay" style="position: relative; z-index: 2;">
+                    <div class="mock-tag">{card.tag}</div>
+                    <div class="mock-text">{card.text}</div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div class="mock-inner-card">
+                    <div class="mock-inner-title">{card.title}</div>
+                    <div class="mock-inner-subtitle" style={colorStyle}>{card.subtitle}</div>
+                    <div class="mock-inner-meta">{card.meta}</div>
+                  </div>
+                  <div class="mock-overlay">
+                    <div class="mock-tag">{card.tag}</div>
+                    <div class="mock-text">{card.text}</div>
+                  </div>
+                </>
+              )}
             </div>
             <div class="mock-footer">
               <div class="mock-cta">{card.cta}</div>

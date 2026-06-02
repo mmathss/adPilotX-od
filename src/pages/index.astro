@@ -60,7 +60,8 @@ const examplesCards = storyData?.examples_cards ? storyData.examples_cards.map((
   subtitle: c.subtitle,
   meta: c.meta,
   text: c.text,
-  cta: c.cta
+  cta: c.cta,
+  image: c.image?.filename || c.image || ''
 })) : SITE_DATA.examples_carousel.cards;
 
 // Video demo URL desde Storyblok
