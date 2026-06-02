@@ -1,6 +1,6 @@
 :root {
   /* Dark Theme (Default) - Hyper-Premium Cinematic Palette */
-  --bg: #07090e;
+  --bg: #060911;
   --fg: #f3f4f6;
   --muted: #94a3b8;
   --primary: #2f62f6; 
@@ -41,7 +41,7 @@
 
 [data-theme="light"] {
   /* Light Theme - Soft Editorial Minimalist Optimization */
-  --bg: #f8fafc; 
+  --bg: #edf2f9; 
   --fg: #0f172a;
   --muted: #475569; 
   --primary: #2f62f6;
