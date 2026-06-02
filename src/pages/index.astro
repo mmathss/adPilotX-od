@@ -18,15 +18,18 @@ import { SITE_DATA } from '../data/siteData';
 const STORYBLOK_TOKEN = "HyfQNjFxYXav9dr5gtB8awtt";
 let storyData: any = null;
 
+const isProd = import.meta.env.PROD;
+const sbVersion = isProd ? "published" : "draft";
+
 try {
-  const response = await fetch(`https://api.storyblok.com/v2/cdn/stories/home?version=draft&token=${STORYBLOK_TOKEN}`);
+  const response = await fetch(`https://api.storyblok.com/v2/cdn/stories/home?version=${sbVersion}&token=${STORYBLOK_TOKEN}`);
   if (response.ok) {
     const data = await response.json();
     storyData = data.story?.content;
     console.log("¡Datos de Storyblok cargados con éxito!");
   } else {
     // Si no encuentra la página 'home', intenta traer la primera disponible
-    const listResponse = await fetch(`https://api.storyblok.com/v2/cdn/stories?version=draft&token=${STORYBLOK_TOKEN}`);
+    const listResponse = await fetch(`https://api.storyblok.com/v2/cdn/stories?version=${sbVersion}&token=${STORYBLOK_TOKEN}`);
     if (listResponse.ok) {
       const listData = await listResponse.json();
       if (listData.stories && listData.stories.length > 0) {
