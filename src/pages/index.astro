@@ -129,7 +129,15 @@ const testimonials = rawTestimonials.map((t: any) => ({
 
       toggle.addEventListener('click', () => {
         const current = html.getAttribute('data-theme') || 'dark';
-        updateTheme(current === 'dark' ? 'light' : 'dark');
+        const nextTheme = current === 'dark' ? 'light' : 'dark';
+
+        if (document.startViewTransition) {
+          document.startViewTransition(() => {
+            updateTheme(nextTheme);
+          });
+        } else {
+          updateTheme(nextTheme);
+        }
       });
     }
 
