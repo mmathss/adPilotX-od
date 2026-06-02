@@ -87,7 +87,13 @@ html { scroll-behavior: smooth; }
 
 body { 
   font-family: 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; 
-  background: var(--bg); 
+  background-color: var(--bg); 
+  background-image: 
+    radial-gradient(circle at 80% 10%, var(--hero-light-1) 0%, transparent 45%),
+    radial-gradient(circle at 15% 30%, var(--hero-light-2) 0%, transparent 45%),
+    radial-gradient(circle at 85% 55%, var(--hero-light-1) 0%, transparent 45%),
+    radial-gradient(circle at 12% 75%, var(--hero-light-2) 0%, transparent 45%),
+    radial-gradient(circle at 75% 92%, var(--hero-light-1) 0%, transparent 45%);
   color: var(--fg); 
   line-height: 1.5; 
   overflow-x: hidden;
@@ -148,12 +154,7 @@ ul { list-style: none; }
 }
 
 .hero-mesh::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, transparent 40%, var(--bg) 95%);
-  pointer-events: none;
-  transition: background 0.3s var(--ease-out);
+  display: none;
 }
 
 /* Global Glass Class with Smooth Transition */
