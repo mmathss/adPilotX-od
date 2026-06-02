@@ -6,9 +6,22 @@ interface Props {
 }
 
 const { videoUrl: propVideoUrl } = Astro.props;
+const rawVideoUrl = propVideoUrl ?? SITE_DATA.video_demo.videoUrl;
+
+// Detectar si es YouTube y extraer el ID del video
+function getYouTubeId(url: string): string | null {
+  const regExp = /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/;
+  const match = url.match(regExp);
+  return match ? match[1] : null;
+}
+
+const youtubeId = rawVideoUrl ? getYouTubeId(rawVideoUrl) : null;
+const isYouTube = !!youtubeId;
+const embedUrl = youtubeId ? `https://www.youtube.com/embed/${youtubeId}?autoplay=0&rel=0&modestbranding=1` : '';
+
 const videoData = {
   ...SITE_DATA.video_demo,
-  videoUrl: propVideoUrl ?? SITE_DATA.video_demo.videoUrl
+  videoUrl: rawVideoUrl
 };
 ---
 <section id="funciones">
@@ -19,19 +32,32 @@ const videoData = {
       {videoData.videoUrl ? (
         <div class="demo-window reveal glass">
           <div class="window-body" style="padding: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000; min-height: 380px; position: relative;">
-            <video id="demo-video-player" src={videoData.videoUrl} poster={videoData.thumbnailUrl || ''} style="width: 100%; height: 100%; object-fit: cover;" playsinline></video>
-            
-            <button class="play-btn" id="demo-video-play-btn" aria-label="Reproducir video" style="position: absolute; z-index: 10; cursor: pointer; transition: all 0.3s var(--ease-out);">
-              <svg id="play-btn-icon" viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="transform: translateX(2px);"><path d="M8 5v14l11-7z"/></svg>
-            </button>
+            {isYouTube ? (
+              <iframe
+                src={embedUrl}
+                style="width: 100%; height: 100%; min-height: 380px; border: none;"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                loading="lazy"
+                title="Video demo AdPilotX"
+              ></iframe>
+            ) : (
+              <>
+                <video id="demo-video-player" src={videoData.videoUrl} poster={videoData.thumbnailUrl || ''} style="width: 100%; height: 100%; object-fit: cover;" playsinline></video>
+                
+                <button class="play-btn" id="demo-video-play-btn" aria-label="Reproducir video" style="position: absolute; z-index: 10; cursor: pointer; transition: all 0.3s var(--ease-out);">
+                  <svg id="play-btn-icon" viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="transform: translateX(2px);"><path d="M8 5v14l11-7z"/></svg>
+                </button>
 
-            <div class="video-controls-bar" style="position: absolute; bottom: 0; left: 0; right: 0; z-index: 5; background: rgba(10, 10, 12, 0.45); backdrop-filter: blur(12px);">
-              <button class="control-play-mini" id="demo-video-play-mini" aria-label="Reproducir" style="cursor: pointer;"><svg id="play-mini-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
-              <div class="video-scrubber-container">
-                <div class="video-progress-bar" id="demo-video-progress" style="width: 0%;"></div>
-              </div>
-              <div class="video-time" id="demo-video-time">0:00 / 0:00</div>
-            </div>
+                <div class="video-controls-bar" style="position: absolute; bottom: 0; left: 0; right: 0; z-index: 5; background: rgba(10, 10, 12, 0.45); backdrop-filter: blur(12px);">
+                  <button class="control-play-mini" id="demo-video-play-mini" aria-label="Reproducir" style="cursor: pointer;"><svg id="play-mini-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+                  <div class="video-scrubber-container">
+                    <div class="video-progress-bar" id="demo-video-progress" style="width: 0%;"></div>
+                  </div>
+                  <div class="video-time" id="demo-video-time">0:00 / 0:00</div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       ) : (
