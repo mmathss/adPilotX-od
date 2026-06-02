@@ -1,7 +1,15 @@
 ---
 import { SITE_DATA } from '../data/siteData';
 
-const videoData = SITE_DATA.video_demo;
+interface Props {
+  videoUrl?: string;
+}
+
+const { videoUrl: propVideoUrl } = Astro.props;
+const videoData = {
+  ...SITE_DATA.video_demo,
+  videoUrl: propVideoUrl ?? SITE_DATA.video_demo.videoUrl
+};
 ---
 <section id="funciones">
   <div class="container">

@@ -63,6 +63,9 @@ const examplesCards = storyData?.examples_cards ? storyData.examples_cards.map((
   cta: c.cta
 })) : SITE_DATA.examples_carousel.cards;
 
+// Video demo URL desde Storyblok
+const videoDemoUrl = storyData?.video_url || "";
+
 // Mapeo dinámico de testimonios
 const rawTestimonials = storyData?.testimonials || SITE_DATA.testimonials;
 const testimonials = rawTestimonials.map((t: any) => ({
@@ -82,7 +85,7 @@ const testimonials = rawTestimonials.map((t: any) => ({
     ctaSecondary={ctaSecondary}
   />
   <Ticker />
-  <Features />
+  <Features videoUrl={videoDemoUrl} />
   <Problem cards={problemCards} />
   <Comparison />
   <Steps />
