@@ -1,0 +1,52 @@
+---
+import { SITE_DATA } from '../data/siteData';
+
+interface Props {
+  cards?: Array<any>;
+}
+
+const { cards = SITE_DATA.examples_carousel.cards } = Astro.props;
+---
+<section id="ejemplos" class="carousel-section">
+  <div class="container">
+    <h2 class="text-center">Ejemplos de anuncios creados con IA</h2>
+    <p class="subtitle text-center">Mockups realistas de campañas optimizadas para diferentes sectores.</p>
+    
+    <div class="carousel-container reveal" id="examples-carousel-container">
+      {cards.map((card, idx) => {
+        let colorStyle = '';
+        if (idx === 1) colorStyle = 'color: #a78bfa;';
+        else if (idx === 2) colorStyle = 'color: #f97316;';
+        else if (idx === 4) colorStyle = 'color: #34d399;';
+        else if (idx === 5) colorStyle = 'color: #f87171;';
+        
+        return (
+          <div class="mock-card glass" style="position: relative;">
+            <div class="mock-header">
+              <div class="mock-avatar">{card.avatar}</div>
+              <div class="mock-info">
+                <h4>{card.name}</h4>
+                <p>Publicidad</p>
+              </div>
+            </div>
+            <div class="mock-content" style="position: relative; overflow: hidden; display: flex; align-items: flex-end;">
+              <div class="mock-inner-card">
+                <div class="mock-inner-title">{card.title}</div>
+                <div class="mock-inner-subtitle" style={colorStyle}>{card.subtitle}</div>
+                <div class="mock-inner-meta">{card.meta}</div>
+              </div>
+              <div class="mock-overlay">
+                <div class="mock-tag">{card.tag}</div>
+                <div class="mock-text">{card.text}</div>
+              </div>
+            </div>
+            <div class="mock-footer">
+              <div class="mock-cta">{card.cta}</div>
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>

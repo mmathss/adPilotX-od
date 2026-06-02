@@ -1,0 +1,64 @@
+---
+import { SITE_DATA } from '../data/siteData';
+
+const plans = SITE_DATA.pricing_plans.plans;
+---
+<section style="padding: 100px 0 60px;">
+  <div class="container">
+    <h2 class="text-center">La IA trabaja más rápido que cualquier humano</h2>
+    <div class="benchmarks-grid reveal">
+      <div class="bench-card glass">
+        <div class="bench-label">Agencia</div>
+        <div class="bench-price">$500 - $3000</div>
+        <p class="text-muted">Gestión manual lenta y costosa.</p>
+        <div class="bench-chart"><div class="bench-fill" style="width: 100%; opacity: 0.3;"></div></div>
+      </div>
+      <div class="bench-card glass">
+        <div class="bench-label">Freelancer</div>
+        <div class="bench-price">$300 - $1500</div>
+        <p class="text-muted">Resultados variables y poca escala.</p>
+        <div class="bench-chart"><div class="bench-fill" style="width: 60%; opacity: 0.5;"></div></div>
+      </div>
+      <div class="bench-card glass featured">
+        <div class="bench-badge">MÁS EFICIENTE</div>
+        <div class="bench-label">AdPilotX.ai</div>
+        <div class="bench-price">Desde $65</div>
+        <p class="text-primary" style="font-weight: 700;">Resultados 24/7 con IA de élite.</p>
+        <div class="bench-chart"><div class="bench-fill" style="width: 20%;"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="precios" style="padding: 60px 0 120px;">
+  <div class="container">
+    <h2 class="text-center">Elige el plan ideal para tu negocio</h2>
+    <p class="subtitle text-center">Sin contratos, cancela cuando quieras.</p>
+    
+    <div class="plans-grid" id="plans-container">
+      {plans.map((plan) => {
+        const featuredClass = plan.featured ? 'featured' : '';
+        const badgeHTML = plan.featured ? <div class="bench-badge">RECOMENDADO</div> : null;
+        const buttonStyle = plan.featured ? "width:100%; background:white; color:var(--primary);" : "width:100%;";
+        return (
+          <div class={`plan-card ${featuredClass} reveal glass`}>
+            {badgeHTML}
+            <h4>{plan.name}</h4>
+            <div class="plan-price">{plan.price}<span>{plan.period}</span></div>
+            <ul class="plan-features">
+              {plan.features.map((feat) => (
+                <li>
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3">
+                    <path d="M20 6L9 17l-5-5"/>
+                  </svg> 
+                  {feat}
+                </li>
+              ))}
+            </ul>
+            <button class="btn btn-primary" style={buttonStyle}>{plan.cta}</button>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>

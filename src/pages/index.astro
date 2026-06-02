@@ -1,0 +1,498 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Hero from '../components/Hero.astro';
+import Ticker from '../components/Ticker.astro';
+import Features from '../components/Features.astro';
+import Problem from '../components/Problem.astro';
+import Comparison from '../components/Comparison.astro';
+import Steps from '../components/Steps.astro';
+import ExamplesCarousel from '../components/ExamplesCarousel.astro';
+import Results from '../components/Results.astro';
+import Pricing from '../components/Pricing.astro';
+import FAQs from '../components/FAQs.astro';
+import Footer from '../components/Footer.astro';
+
+import { SITE_DATA } from '../data/siteData';
+
+const STORYBLOK_TOKEN = "HyfQNjFxYXav9dr5gtB8awtt";
+let storyData: any = null;
+
+try {
+  const response = await fetch(`https://api.storyblok.com/v2/cdn/stories/home?version=draft&token=${STORYBLOK_TOKEN}`);
+  if (response.ok) {
+    const data = await response.json();
+    storyData = data.story?.content;
+    console.log("¡Datos de Storyblok cargados con éxito!");
+  } else {
+    // Si no encuentra la página 'home', intenta traer la primera disponible
+    const listResponse = await fetch(`https://api.storyblok.com/v2/cdn/stories?version=draft&token=${STORYBLOK_TOKEN}`);
+    if (listResponse.ok) {
+      const listData = await listResponse.json();
+      if (listData.stories && listData.stories.length > 0) {
+        storyData = listData.stories[0].content;
+        console.log("¡Datos de la primera página de Storyblok cargados con éxito!");
+      }
+    }
+  }
+} catch (error) {
+  console.error("Error cargando Storyblok, usando fallback local:", error);
+}
+
+// Fallbacks automáticos si no existe el campo en Storyblok o si falla el fetch
+const heroTitle = storyData?.hero_title || "Multiplica tus ventas en Meta Ads con <span class=\"inline-img-pill\"></span> IA Proactiva";
+const heroSubtitle = storyData?.hero_subtitle || "Consigue más clientes y ventas en Meta Ads sin complicarte con el Administrador de Anuncios. Nuestra IA crea tus campañas, segmenta a tu cliente ideal y cuida tu presupuesto las 24 horas. Resultados reales sin agencias costosas.";
+const ctaPrimary = storyData?.cta_primary_text || "Activar cuenta gratis";
+const ctaSecondary = "Ver casos de estudio";
+
+// Mapeo dinámico de tarjetas de problemas
+const problemCards = storyData?.problem_cards ? storyData.problem_cards.map((c: any) => ({
+  title: c.title,
+  desc: c.desc
+})) : SITE_DATA.problem_grid.cards;
+
+// Mapeo dinámico de carrusel de ejemplos
+const examplesCards = storyData?.examples_cards ? storyData.examples_cards.map((c: any) => ({
+  avatar: c.avatar,
+  name: c.name,
+  tag: c.tag,
+  title: c.title,
+  subtitle: c.subtitle,
+  meta: c.meta,
+  text: c.text,
+  cta: c.cta
+})) : SITE_DATA.examples_carousel.cards;
+
+// Mapeo dinámico de testimonios
+const rawTestimonials = storyData?.testimonials || SITE_DATA.testimonials;
+const testimonials = rawTestimonials.map((t: any) => ({
+  quote: t.quote || t.text || "",
+  author: t.name || t.author || "",
+  role: t.company || t.role || "",
+  avatarLetter: t.avatar || t.avatarLetter || ""
+}));
+---
+
+<Layout title="AdPilotX.ai">
+  <Navbar />
+  <Hero 
+    title={heroTitle}
+    subtitle={heroSubtitle}
+    ctaPrimary={ctaPrimary}
+    ctaSecondary={ctaSecondary}
+  />
+  <Ticker />
+  <Features />
+  <Problem cards={problemCards} />
+  <Comparison />
+  <Steps />
+  <ExamplesCarousel cards={examplesCards} />
+  <Results testimonials={testimonials} />
+  <Pricing />
+  <FAQs />
+  <Footer />
+
+  <script>
+    import { SITE_DATA } from '../data/siteData';
+
+    const nichesData = SITE_DATA.nichesData;
+    const guideMessages = SITE_DATA.guideMessages;
+    
+    // -------------------------------------------------------------
+    // Manejo de Temas y Navegación
+    // -------------------------------------------------------------
+    const toggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+
+    if (toggle) {
+      const sun = toggle.querySelector('.sun-icon') as HTMLElement;
+      const moon = toggle.querySelector('.moon-icon') as HTMLElement;
+
+      const updateTheme = (theme: string) => {
+        html.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        if (theme === 'dark') {
+          if (sun) sun.style.display = 'none';
+          if (moon) moon.style.display = 'block';
+        } else {
+          if (sun) sun.style.display = 'block';
+          if (moon) moon.style.display = 'none';
+        }
+      };
+
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      updateTheme(savedTheme);
+
+      toggle.addEventListener('click', () => {
+        const current = html.getAttribute('data-theme') || 'dark';
+        updateTheme(current === 'dark' ? 'light' : 'dark');
+      });
+    }
+
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('main-nav');
+      if (nav) {
+        if (window.scrollY > 50) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }
+    }, { passive: true });
+
+    // -------------------------------------------------------------
+    // Consola Interactiva
+    // -------------------------------------------------------------
+    const consoleLog = document.getElementById('console-log');
+    const nicheButtons = document.querySelectorAll('.niche-btn');
+    let currentLogTimeout: number | null = null;
+
+    function typeLog(lines: string[], index = 0) {
+      if (!consoleLog) return;
+      if (index === 0) {
+        if (currentLogTimeout) clearTimeout(currentLogTimeout);
+        consoleLog.innerHTML = '';
+      }
+      if (index < lines.length) {
+        const line = document.createElement('div');
+        line.className = 'log-line';
+        
+        if (lines[index].includes('[SISTEMA]')) {
+          line.classList.add('text-blue');
+        } else if (lines[index].includes('[ANALIZADOR]') || lines[index].includes('[COPIADO]')) {
+          line.classList.add('text-muted');
+        } else if (lines[index].includes('[A/B TESTING]') || lines[index].includes('[OPTIMIZADOR]')) {
+          line.classList.add('text-green');
+        }
+        
+        line.style.opacity = '0';
+        line.style.transform = 'translateY(4px)';
+        line.style.transition = 'all 0.25s var(--ease-out)';
+        consoleLog.appendChild(line);
+        
+        let charIndex = 0;
+        const txt = lines[index];
+        
+        function typeChar() {
+          if (!line) return;
+          if (charIndex < txt.length) {
+            line.textContent += txt.charAt(charIndex);
+            charIndex++;
+            currentLogTimeout = setTimeout(typeChar, 10) as unknown as number;
+          } else {
+            line.style.opacity = '1';
+            line.style.transform = 'translateY(0)';
+            currentLogTimeout = setTimeout(() => typeLog(lines, index + 1), 250) as unknown as number;
+          }
+        }
+        typeChar();
+      }
+    }
+
+    function updateConsoleNiche(nicheKey: keyof typeof nichesData) {
+      const data = nichesData[nicheKey];
+      if (!data) return;
+      
+      const avatarEl = document.getElementById('live-ad-avatar-letter');
+      const nameEl = document.getElementById('live-ad-name');
+      const captionEl = document.getElementById('live-ad-caption-text');
+      const tagEl = document.getElementById('live-ad-tag');
+      const titleEl = document.getElementById('live-ad-inner-title');
+      const subtitleEl = document.getElementById('live-ad-inner-subtitle');
+      const metaEl = document.getElementById('live-ad-inner-meta');
+      const domainEl = document.getElementById('live-ad-domain');
+      const ctaEl = document.getElementById('live-ad-cta-btn');
+      const roasEl = document.getElementById('live-ad-roas');
+      const cpaEl = document.getElementById('live-ad-cpa');
+      const containerEl = document.getElementById('live-ad-image-container');
+
+      if (avatarEl) avatarEl.textContent = data.avatar;
+      if (nameEl) nameEl.textContent = data.name;
+      if (captionEl) captionEl.textContent = data.caption;
+      if (tagEl) tagEl.textContent = data.tag;
+      if (titleEl) titleEl.textContent = data.title;
+      
+      if (subtitleEl) {
+        subtitleEl.textContent = data.subtitle;
+        if (nicheKey === 'beauty') {
+          subtitleEl.style.color = '#a78bfa';
+        } else if (nicheKey === 'restaurant') {
+          subtitleEl.style.color = '#f97316';
+        } else if (nicheKey === 'realty') {
+          subtitleEl.style.color = '#34d399';
+        } else {
+          subtitleEl.style.color = 'var(--primary)';
+        }
+      }
+      
+      if (metaEl) metaEl.textContent = data.meta;
+      if (domainEl) domainEl.textContent = data.domain;
+      if (ctaEl) ctaEl.textContent = data.cta;
+      if (roasEl) roasEl.textContent = data.roas;
+      if (cpaEl) cpaEl.textContent = data.cpa;
+      if (containerEl) containerEl.style.background = data.gradient;
+      
+      typeLog(data.log);
+    }
+
+    function initPlaygroundConsole() {
+      nicheButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          nicheButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const niche = btn.getAttribute('data-niche') as keyof typeof nichesData;
+          
+          const consoleEl = document.getElementById('playground-console');
+          const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          if (consoleEl && !prefersReduced) {
+            consoleEl.style.transform = 'scale(0.985) rotateX(1deg)';
+            consoleEl.style.borderColor = 'rgba(47, 98, 246, 0.4)';
+            setTimeout(() => {
+              consoleEl.style.transform = 'none';
+              consoleEl.style.borderColor = 'var(--glass-border)';
+            }, 300);
+          }
+          
+          updateConsoleNiche(niche);
+        });
+      });
+
+      setTimeout(() => {
+        if (document.getElementById('console-log')) {
+          updateConsoleNiche('dental');
+        }
+      }, 400);
+    }
+
+    // -------------------------------------------------------------
+    // Asistente Flotante Virtual (Guide)
+    // -------------------------------------------------------------
+    function initVirtualGuide() {
+      const guideWidget = document.getElementById('guide-widget');
+      if (!guideWidget || !guideMessages) return;
+
+      const guideAvatar = document.getElementById('guide-avatar-container');
+      const guideBubble = document.getElementById('guide-bubble');
+      const guideText = document.getElementById('guide-text');
+      const guideClose = document.getElementById('guide-close');
+
+      if (!guideAvatar || !guideBubble || !guideText || !guideClose) return;
+
+      let isMinimized = sessionStorage.getItem('guide-minimized') === 'true';
+      let activeSection: string | null = null;
+
+      if (!isMinimized) {
+        setTimeout(() => {
+          guideBubble.classList.add('active');
+        }, 1500);
+      }
+
+      function minimizeGuide(e?: Event) {
+        if (e) e.stopPropagation();
+        if (guideBubble) guideBubble.classList.remove('active');
+        sessionStorage.setItem('guide-minimized', 'true');
+        isMinimized = true;
+      }
+
+      function maximizeGuide() {
+        if (isMinimized) {
+          if (guideBubble) guideBubble.classList.add('active');
+          sessionStorage.setItem('guide-minimized', 'false');
+          isMinimized = false;
+          triggerGlowEffect();
+        } else {
+          minimizeGuide();
+        }
+      }
+
+      function triggerGlowEffect() {
+        if (!guideAvatar) return;
+        const avatar = guideAvatar.querySelector('.guide-avatar') as HTMLElement;
+        if (avatar) {
+          avatar.style.animation = 'none';
+          avatar.offsetHeight; // Reflow
+          avatar.style.animation = 'pulseGlow 1s ease-in-out';
+          setTimeout(() => {
+            avatar.style.animation = 'pulseGlow 3s infinite ease-in-out';
+          }, 1000);
+        }
+      }
+
+      function updateGuideText(key: keyof typeof guideMessages) {
+        if (activeSection === key || !guideMessages[key] || !guideText) return;
+        activeSection = key;
+
+        triggerGlowEffect();
+
+        if (!isMinimized) {
+          guideText.classList.add('text-updating');
+          setTimeout(() => {
+            guideText.textContent = guideMessages[key];
+            guideText.classList.remove('text-updating');
+          }, 250);
+        } else {
+          guideText.textContent = guideMessages[key];
+        }
+      }
+
+      guideClose.addEventListener('click', (e) => minimizeGuide(e));
+      guideAvatar.addEventListener('click', maximizeGuide);
+
+      const sectionsMapping = [
+        { selector: '.hero', key: 'hero' as const },
+        { selector: '#funciones', key: 'problemas' as const },
+        { selector: '#pasos', key: 'pasos' as const },
+        { selector: '#ejemplos', key: 'ejemplos' as const },
+        { selector: '#comparativa', key: 'comparativa' as const },
+        { selector: '#resultados', key: 'resultados' as const },
+        { selector: '#precios', key: 'precios' as const },
+        { selector: '#faq', key: 'faq' as const }
+      ];
+
+      // @ts-ignore
+      const trigger = window.ScrollTrigger;
+      if (trigger) {
+        sectionsMapping.forEach(item => {
+          const el = document.querySelector(item.selector);
+          if (el) {
+            trigger.create({
+              trigger: el,
+              start: "top 60%",
+              end: "bottom 40%",
+              onEnter: () => updateGuideText(item.key),
+              onEnterBack: () => updateGuideText(item.key)
+            });
+          }
+        });
+      }
+    }
+
+    // -------------------------------------------------------------
+    // Animaciones GSAP
+    // -------------------------------------------------------------
+    function initAnimations() {
+      // @ts-ignore
+      const gsapEngine = window.gsap;
+      // @ts-ignore
+      const trigger = window.ScrollTrigger;
+
+      if (!gsapEngine || !trigger) return;
+      gsapEngine.registerPlugin(trigger);
+
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Scrubbing de palabras
+      document.querySelectorAll('.reveal-scrub').forEach(el => {
+        const text = el.textContent?.trim() || '';
+        const words = text.split(/\s+/);
+        el.innerHTML = words.map(word =>
+          `<span class="scrub-word" style="opacity:0.15;transition:opacity 0.25s var(--ease-out);">${word}</span>`
+        ).join(' ');
+        
+        if (!prefersReduced) {
+          gsapEngine.to(el.querySelectorAll('.scrub-word'), {
+            scrollTrigger: { trigger: el, start: "top 85%", end: "bottom 60%", scrub: true },
+            opacity: 1,
+            stagger: 0.08,
+            ease: "none"
+          });
+        } else {
+          el.querySelectorAll('.scrub-word').forEach(word => {
+            (word as HTMLElement).style.opacity = '1';
+          });
+        }
+      });
+
+      // safeReveal
+      function safeReveal(selector: string, options: any = {}) {
+        if (prefersReduced) return;
+        const defaults = { y: 20, opacity: 0, duration: 0.7, ease: "power3.out", stagger: 0 };
+        const cfg = Object.assign({}, defaults, options);
+        const vH = window.innerHeight;
+
+        document.querySelectorAll(selector).forEach((el, i) => {
+          const top = el.getBoundingClientRect().top;
+          if (top <= vH) return; // Ya visible
+
+          const animProps = { y: cfg.y, opacity: cfg.opacity, duration: cfg.duration, ease: cfg.ease };
+          if (cfg.stagger) animProps.delay = i * cfg.stagger;
+
+          gsapEngine.from(el, {
+            ...animProps,
+            scrollTrigger: {
+              trigger: el,
+              start: "top 90%",
+              toggleActions: "play none none none"
+            }
+          });
+        });
+      }
+
+      safeReveal('section h2');
+      safeReveal('.demo-window, .data-banner');
+      safeReveal('.problem-card', { stagger: 0.06 });
+      safeReveal('.step-card',    { stagger: 0.07 });
+      safeReveal('.bench-card',   { stagger: 0.06 });
+      safeReveal('.plan-card',    { stagger: 0.07 });
+      safeReveal('.mock-card',    { stagger: 0.05 });
+      safeReveal('.faq-item',     { stagger: 0.05 });
+      safeReveal('.final-cta');
+    }
+
+    // -------------------------------------------------------------
+    // Inicialización al Cargar el DOM
+    // -------------------------------------------------------------
+    window.addEventListener('DOMContentLoaded', () => {
+      initPlaygroundConsole();
+      initVirtualGuide();
+      initAnimations();
+
+      // Escuchar eventos de Storyblok para recarga interactiva en tiempo real
+      // @ts-ignore
+      if (window.storyblokRegisterEvent) {
+        // @ts-ignore
+        window.storyblokRegisterEvent(() => {
+          // @ts-ignore
+          const sb = new window.StoryblokBridge();
+          sb.on(['published', 'change'], () => {
+            window.location.reload();
+          });
+        });
+      }
+
+      // Efecto hover radial en tarjetas de testimonios
+      document.querySelectorAll('.testi-card').forEach(card => {
+        card.addEventListener('mousemove', e => {
+          const rect = card.getBoundingClientRect();
+          const mouseEvent = e as MouseEvent;
+          (card as HTMLElement).style.setProperty('--mouse-x', `${mouseEvent.clientX - rect.left}px`);
+          (card as HTMLElement).style.setProperty('--mouse-y', `${mouseEvent.clientY - rect.top}px`);
+        });
+      });
+
+      // Acordeón FAQs
+      document.querySelectorAll('.faq-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.parentElement;
+          if (!item) return;
+          const panel = item.querySelector('.faq-ans') as HTMLElement;
+          if (!panel) return;
+          
+          document.querySelectorAll('.faq-item').forEach(otherItem => {
+            if (otherItem !== item && otherItem.classList.contains('active')) {
+              otherItem.classList.remove('active');
+              (otherItem.querySelector('.faq-ans') as HTMLElement).style.height = '0px';
+            }
+          });
+
+          item.classList.toggle('active');
+          if (item.classList.contains('active')) {
+            panel.style.height = panel.scrollHeight + 'px';
+          } else {
+            panel.style.height = '0px';
+          }
+        });
+      });
+    });
+  </script>
+</Layout>

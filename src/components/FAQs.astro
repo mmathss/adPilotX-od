@@ -1,0 +1,21 @@
+---
+import { SITE_DATA } from '../data/siteData';
+
+const faqs = SITE_DATA.faqs.list;
+---
+<section id="faq">
+  <div class="container">
+    <h2 class="text-center">Preguntas Frecuentes</h2>
+    <div class="faq-grid" id="faq-container">
+      {faqs.map((faq) => (
+        <div class="faq-item reveal glass">
+          <button class="faq-btn">
+            {faq.q}
+            <svg class="faq-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          </button>
+          <div class="faq-ans"><p>{faq.a}</p></div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

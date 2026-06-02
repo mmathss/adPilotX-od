@@ -1,0 +1,65 @@
+---
+import { SITE_DATA } from '../data/siteData';
+
+const features = SITE_DATA.comparative.features;
+---
+<section id="comparativa">
+  <div class="container">
+    <div class="comp-split">
+      <div class="table-wrap reveal">
+        <table>
+          <thead>
+            <tr>
+              <th>Aspecto</th>
+              <th class="ai-highlight" style="text-align:center;">AdPilotX.ai</th>
+              <th>Humano</th>
+            </tr>
+          </thead>
+          <tbody id="comparative-table-body">
+            {features.map((feat) => {
+              const isError = feat.aspect.includes('Error') || feat.ai.includes('Error');
+              const pillClass = isError ? 'comp-pill-green' : 'comp-pill-blue';
+              return (
+                <tr>
+                  <td>{feat.aspect}</td>
+                  <td class="ai-highlight" style="text-align:center;">
+                    <span class={pillClass}>{feat.ai}</span>
+                  </td>
+                  <td>{feat.human}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div class="comp-card reveal">
+        <div>
+          <h3 class="text-primary" style="margin-bottom:16px;">Escala algorítmica</h3>
+          <p class="reveal-scrub">El sistema genera variaciones continuas de copys y creativos visuales, realiza A/B testing predictivo 24/7 y redistribuye el presupuesto hacia los conjuntos de anuncios ganadores.</p>
+        </div>
+        
+        {/* Micro comparison scaling graphics */}
+        <div style="margin-top: 32px; display:flex; flex-direction:column; gap:14px; width:100%;">
+          <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:var(--muted); font-family:'Outfit',sans-serif; font-weight:700; letter-spacing:0.05em;">
+            <span>VARIACIONES CREADAS</span>
+            <span>PROGRESO DEL SISTEMA</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="font-size:0.8rem; font-weight:800; font-family:'Outfit',sans-serif; width:80px; color:var(--fg);">AdPilotX</span>
+            <div style="flex:1; height:6px; background:rgba(255,255,255,0.03); border-radius:99px; overflow:hidden; border:1px solid var(--glass-border); position:relative;">
+              <div style="height:100%; width:100%; background:linear-gradient(90deg, var(--primary), var(--secondary)); border-radius:99px;"></div>
+            </div>
+            <span style="font-size:0.75rem; font-weight:700; color:var(--primary); width:60px; text-align:right;">50+ Ads</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; opacity:0.55;">
+            <span style="font-size:0.8rem; font-weight:800; font-family:'Outfit',sans-serif; width:80px; color:var(--fg);">Humano</span>
+            <div style="flex:1; height:6px; background:rgba(255,255,255,0.03); border-radius:99px; overflow:hidden; border:1px solid var(--glass-border); position:relative;">
+              <div style="height:100%; width:8%; background:var(--muted); border-radius:99px;"></div>
+            </div>
+            <span style="font-size:0.75rem; font-weight:700; color:var(--muted); width:60px; text-align:right;">1-2 Ads</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

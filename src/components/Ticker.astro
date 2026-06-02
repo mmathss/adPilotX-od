@@ -1,0 +1,16 @@
+---
+import { SITE_DATA } from '../data/siteData';
+---
+<div class="premium-ticker reveal">
+  <div class="ticker-track" id="ticker-track">
+    {SITE_DATA.ticker.map((item) => (
+      <span class="ticker-item">{item}</span>
+      <span class="ticker-dot"></span>
+    ))}
+    {/* Duplicado para loop infinito fluido */}
+    {SITE_DATA.ticker.map((item) => (
+      <span class="ticker-item">{item}</span>
+      <span class="ticker-dot"></span>
+    ))}
+  </div>
+</div>

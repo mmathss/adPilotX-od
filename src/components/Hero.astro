@@ -1,0 +1,109 @@
+---
+interface Props {
+  title: string;
+  subtitle: string;
+  ctaPrimary: string;
+  ctaSecondary: string;
+}
+
+const { title, subtitle, ctaPrimary, ctaSecondary } = Astro.props;
+---
+<section class="hero">
+  <div class="hero-mesh"></div>
+  <div class="container hero-grid">
+    <div class="hero-left text-left">
+      <h1 class="reveal" set:html={title} />
+      <p class="subtitle reveal-scrub">{subtitle}</p>
+      
+      <div class="hero-ctas reveal">
+        <button class="btn btn-primary">{ctaPrimary}</button>
+        <button class="btn glass-btn" style="border: 1px solid var(--glass-border); background: var(--surface);">{ctaSecondary}</button>
+      </div>
+
+      <div class="niche-selector-panel reveal">
+        <span class="niche-label">PRUEBA LA IA EN TU NICHO:</span>
+        <div class="niche-btns">
+          <button class="niche-btn active" data-niche="dental">Clínica</button>
+          <button class="niche-btn" data-niche="beauty">Estética</button>
+          <button class="niche-btn" data-niche="restaurant">Gastronomía</button>
+          <button class="niche-btn" data-niche="ecommerce">Ecommerce</button>
+          <button class="niche-btn" data-niche="realty">Inmobiliaria</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right reveal">
+      <div class="console-glow"></div>
+      <div class="adpilot-console" id="playground-console">
+        <!-- Console Top Bar -->
+        <div class="console-header">
+          <div class="console-dots">
+            <div class="console-dot"></div>
+            <div class="console-dot"></div>
+            <div class="console-dot"></div>
+          </div>
+          <div class="console-tab">AdPilot Console v2.0</div>
+          <div class="console-status"><span class="status-indicator"></span> Proactivo</div>
+        </div>
+
+        <!-- Console Main Grid -->
+        <div class="console-body">
+          <!-- Left Panel: Live log activity -->
+          <div class="console-log-panel">
+            <div class="log-header">ACTIVIDAD DEL AGENTE</div>
+            <div class="log-content" id="console-log">
+              <div class="log-line text-blue">[SISTEMA] Inicializando AdPilotX...</div>
+              <div class="log-line text-muted">[SISTEMA] API Meta conectada encriptada.</div>
+              <div class="log-line text-green">[INFO] Analizando audiencias del sector...</div>
+            </div>
+          </div>
+
+          <!-- Right Panel: Creative Live Preview -->
+          <div class="console-preview-panel">
+            <div class="preview-header">META ADS LIVE PREVIEW</div>
+            <div class="live-ad-card">
+              <div class="live-ad-header">
+                <div class="live-ad-avatar" id="live-ad-avatar-letter">D</div>
+                <div>
+                  <h5 id="live-ad-name">Dental Studio</h5>
+                  <span>Publicidad patrocinada</span>
+                </div>
+              </div>
+              
+              <div class="live-ad-caption" id="live-ad-caption-text">Recupera tu sonrisa con nuestro tratamiento de implantes de última generación. Tecnología 3D indolora.</div>
+              
+              <div class="live-ad-creative" id="live-ad-image-container">
+                <div class="ad-creative-pill" id="live-ad-tag">ODONTOLOGÍA</div>
+                <div class="ad-creative-card-inner">
+                  <h3 id="live-ad-inner-title">Sonríe sin complejos.</h3>
+                  <h4 id="live-ad-inner-subtitle" style="color: var(--primary);">Implantes Premium</h4>
+                  <span id="live-ad-inner-meta">Tecnología 3D indolora</span>
+                </div>
+              </div>
+
+              <div class="live-ad-footer">
+                <div class="ad-footer-left">
+                  <span id="live-ad-domain">adpilotx.ai/dental</span>
+                  <strong id="live-ad-cta-btn">RESERVAR CITA</strong>
+                </div>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+
+            <!-- Performance Mini Metrics inside Console -->
+            <div class="console-mini-metrics">
+              <div class="mini-metric">
+                <span class="mini-label">ROAS PROYECTADO</span>
+                <strong class="mini-val text-green" id="live-ad-roas">4.18x</strong>
+              </div>
+              <div class="mini-metric">
+                <span class="mini-label">CPA REDUCIDO</span>
+                <strong class="mini-val text-blue" id="live-ad-cpa">-14.2%</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

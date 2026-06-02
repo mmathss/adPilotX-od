@@ -1,0 +1,91 @@
+---
+import { SITE_DATA } from '../data/siteData';
+
+interface Props {
+  cards?: Array<{ title: string; desc: string }>;
+}
+
+const { cards = SITE_DATA.problem_grid.cards } = Astro.props;
+---
+<section>
+  <div class="container">
+    <h2 class="text-center">El problema no es Meta Ads, es la gestión</h2>
+    <div class="problem-grid" id="problem-grid-container">
+      {cards.map((card, idx) => {
+        if (idx === 0) {
+          return (
+            <div class="problem-card reveal">
+              <div class="bento-split-layout">
+                <div class="bento-split-text">
+                  <div class="p-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  </div>
+                  <h3>{card.title}</h3>
+                  <p>{card.desc}</p>
+                </div>
+                <div class="bento-split-visual">
+                  <div class="problem-micro-mock" style="position: relative; overflow: hidden; width: 100%;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:var(--muted); margin-bottom:10px; font-family:'Outfit',sans-serif; font-weight:700;">
+                      <span>PRESUPUESTO</span>
+                      <span style="color:#ef4444;">-38% PERDIDO</span>
+                    </div>
+                    <svg viewBox="0 0 160 50" style="width:100%; height:36px; overflow:visible;">
+                      <path d="M0,45 Q30,42 60,18 T120,40 T160,45" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"/>
+                      <circle cx="60" cy="18" r="3.5" fill="#ef4444" stroke="white" stroke-width="1.5"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div class="p-arrow"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
+            </div>
+          );
+        } else if (idx === 3) {
+          return (
+            <div class="problem-card reveal">
+              <div class="bento-split-layout">
+                <div class="bento-split-text">
+                  <div class="p-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                  </div>
+                  <h3>{card.title}</h3>
+                  <p>{card.desc}</p>
+                </div>
+                <div class="bento-split-visual">
+                  <div style="display:flex; flex-direction:column; gap:10px; width:100%; max-width:200px;">
+                    <div style="background:rgba(16, 185, 129, 0.08); border:1px solid rgba(16, 185, 129, 0.2); padding:8px 12px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; font-size:0.65rem; font-family:'Outfit',sans-serif; font-weight:700;">
+                      <span style="color:#10b981;">AdPilotX (Optimizado)</span>
+                      <span style="width:6px; height:6px; border-radius:50%; background:#10b981; animation:flash-pulse 2s infinite;"></span>
+                    </div>
+                    <div style="background:rgba(239, 68, 68, 0.06); border:1px solid rgba(239, 68, 68, 0.15); padding:8px 12px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; font-size:0.65rem; font-family:'Outfit',sans-serif; font-weight:700; opacity:0.65;">
+                      <span style="color:#ef4444;">Manual (Degradado)</span>
+                      <span style="width:6px; height:6px; border-radius:50%; background:#ef4444;"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-arrow"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
+            </div>
+          );
+        } else {
+          return (
+            <div class="problem-card reveal">
+              <div>
+                <div class="p-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    {idx === 1 && <><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></>}
+                    {idx === 2 && <><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></>}
+                    {idx === 4 && <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /><path d="M16 13H8" /><path d="M16 17H8" /><path d="M10 9H8" /></>}
+                    {idx === 5 && <><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></>}
+                  </svg>
+                </div>
+                <h3>{card.title}</h3>
+                <p>{card.desc}</p>
+              </div>
+              <div class="p-arrow"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
+            </div>
+          );
+        }
+      })}
+    </div>
+  </div>
+</section>
