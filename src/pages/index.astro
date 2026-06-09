@@ -131,12 +131,24 @@ const testimonials = rawTestimonials.map((t: any) => ({
         const current = html.getAttribute('data-theme') || 'dark';
         const nextTheme = current === 'dark' ? 'light' : 'dark';
 
+        // Desactivar temporalmente transiciones CSS
+        html.classList.add('no-transitions');
+
         if (document.startViewTransition) {
-          document.startViewTransition(() => {
+          const transition = document.startViewTransition(() => {
             updateTheme(nextTheme);
+          });
+          // Volver a activar las transiciones una vez completada la animación
+          transition.finished.finally(() => {
+            html.classList.remove('no-transitions');
           });
         } else {
           updateTheme(nextTheme);
+          // Forzar reflujo para asegurar la actualización instantánea
+          // y remover la clase en el siguiente frame
+          requestAnimationFrame(() => {
+            html.classList.remove('no-transitions');
+          });
         }
       });
     }
