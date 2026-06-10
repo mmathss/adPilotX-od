@@ -6,15 +6,76 @@ interface Props {
 }
 
 const { cards = SITE_DATA.problem_grid.cards } = Astro.props;
+
+// Función para determinar el tipo de tarjeta (Visual con gráfico de presupuesto, Comparativa o Estándar)
+const getCardType = (title: string, desc: string, index: number) => {
+  const text = `${title} ${desc}`.toLowerCase();
+  
+  // Si coincide con presupuesto, dinero, costos o es el primer elemento (sin términos de comparación)
+  if (
+    text.includes('presupuesto') || 
+    text.includes('dinero') || 
+    text.includes('costo') || 
+    text.includes('esfuma') || 
+    text.includes('pagas de más') ||
+    (index === 0 && !text.includes('manual') && !text.includes('agencia'))
+  ) {
+    return 'budget';
+  }
+  
+  // Si coincide con comparativa, manual, agencia, o es el cuarto elemento original (índice 3)
+  if (
+    text.includes('manual') || 
+    text.includes('agencia') || 
+    text.includes('desatendida') || 
+    text.includes('vs') || 
+    text.includes('comparar') ||
+    (index === 3 && !text.includes('presupuesto') && !text.includes('dinero'))
+  ) {
+    return 'comparison';
+  }
+  
+  return 'standard';
+};
+
+// Función para determinar el icono vectorial de la tarjeta estándar
+const getCardIcon = (title: string, desc: string, index: number) => {
+  const text = `${title} ${desc}`.toLowerCase();
+  
+  // Reloj / Tiempo / Proceso
+  if (text.includes('tiempo') || text.includes('lento') || text.includes('esperando') || text.includes('horas') || text.includes('días') || index === 1) {
+    return 'clock';
+  }
+  
+  // Personas / Agencia / Equipo
+  if (text.includes('equipo') || text.includes('diseñador') || text.includes('gente') || index === 2) {
+    return 'team';
+  }
+  
+  // Reportes / Claridad / Documentos
+  if (text.includes('claridad') || text.includes('reportes') || text.includes('métricas') || text.includes('inversión') || text.includes('datos') || index === 4) {
+    return 'report';
+  }
+  
+  // Edición / Pérdida / Escritura / Configuración
+  if (text.includes('pérdida') || text.includes('explicando') || text.includes('escribir') || text.includes('crear') || index === 5) {
+    return 'edit';
+  }
+  
+  // Icono de marca por defecto (Mira táctica de AdPilotX)
+  return 'crosshair';
+};
 ---
 <section>
   <div class="container">
     <h2 class="text-center">El problema no es Meta Ads, es la gestión</h2>
     <div class="problem-grid" id="problem-grid-container">
       {cards.map((card, idx) => {
-        if (idx === 0) {
+        const type = getCardType(card.title, card.desc, idx);
+        
+        if (type === 'budget') {
           return (
-            <div class="problem-card reveal">
+            <div class="problem-card reveal card-wide budget-card">
               <div class="bento-split-layout">
                 <div class="bento-split-text">
                   <div class="p-icon">
@@ -39,9 +100,9 @@ const { cards = SITE_DATA.problem_grid.cards } = Astro.props;
               <div class="p-arrow"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div>
             </div>
           );
-        } else if (idx === 3) {
+        } else if (type === 'comparison') {
           return (
-            <div class="problem-card reveal">
+            <div class="problem-card reveal card-wide comparison-card">
               <div class="bento-split-layout">
                 <div class="bento-split-text">
                   <div class="p-icon">
@@ -67,15 +128,48 @@ const { cards = SITE_DATA.problem_grid.cards } = Astro.props;
             </div>
           );
         } else {
+          const icon = getCardIcon(card.title, card.desc, idx);
           return (
-            <div class="problem-card reveal">
+            <div class="problem-card reveal card-standard">
               <div>
                 <div class="p-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    {idx === 1 && <><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></>}
-                    {idx === 2 && <><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></>}
-                    {idx === 4 && <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /><path d="M16 13H8" /><path d="M16 17H8" /><path d="M10 9H8" /></>}
-                    {idx === 5 && <><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></>}
+                    {icon === 'clock' && (
+                      <>
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
+                      </>
+                    )}
+                    {icon === 'team' && (
+                      <>
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                      </>
+                    )}
+                    {icon === 'report' && (
+                      <>
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <path d="M14 2v6h6" />
+                        <path d="M16 13H8" />
+                        <path d="M16 17H8" />
+                        <path d="M10 9H8" />
+                      </>
+                    )}
+                    {icon === 'edit' && (
+                      <>
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                      </>
+                    )}
+                    {icon === 'crosshair' && (
+                      <>
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 2v20" />
+                        <path d="M2 12h20" />
+                      </>
+                    )}
                   </svg>
                 </div>
                 <h3>{card.title}</h3>
